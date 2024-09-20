@@ -4,13 +4,13 @@ Description...
 
 ## Preparation
 
-The environment with the software version required to use the scripts is provided in `env/samba.yaml`. Every dependency can be easily installed if a software manager like micromamba is used:
+Every software required for this analysis is detailed in `env/samba.yaml`. Each software (with required versions) can be easily installed using a software manager like micromamba.
 
 ```
 # download yaml
-https://github.com/Benjamin-Valderrama/saMBA-pipeline/blob/main/env/samba.yaml
+wget https://github.com/Benjamin-Valderrama/saMBA-pipeline/blob/main/env/samba.yaml
 
-# build a local copy of the environment with micromamba
+# build an exact local copy of the environment required for this analysis
 micromamba env create --name samba --file samba.yaml
 
 # the environment has to be activated before it can be used
