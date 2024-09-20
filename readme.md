@@ -1,4 +1,4 @@
-## saMBA
+## saMBA-pipeline
 
 Description...
 
