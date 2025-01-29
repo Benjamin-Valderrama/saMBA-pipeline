@@ -30,7 +30,6 @@ First, we can take a look at the help message of our main script `bin/saMBA.sh`
 saMBA.sh --help
 
 
-"""
     Usage: $0 -i accession_codes.tsv -o output_samba/
           [-d|--download] [-a | --analyse] [-h|--help]
     
@@ -44,16 +43,13 @@ saMBA.sh --help
     
     Optional arguments:
       -h, --help           Display this help message.
-"""
-
 ```
 
 Thus, saMBA.sh requires an input file and a path to a folder where the outputs will be direced. In this repository, we have added a the `examples/test.tsv` file as a demo to show how users how to work with this pipeline
 
 ```
-# with the samba environment activated, run the main script
-saMBA.sh -i saMBA-pipeline/examples/test.tsv -o archive
-
+# with the samba environment activated, run the main script in the background
+saMBA.sh -i saMBA-pipeline/examples/test.tsv -o archive > progress.log &
 ```
 
 ## Output description
