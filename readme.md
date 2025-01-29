@@ -29,8 +29,10 @@ micromamba activate samba
 First, we can take a look at the help message of our main script `bin/saMBA.sh`
 ```
 saMBA.sh --help
+```
 
-
+Which should print the following message
+```
     Usage: $0 -i accession_codes.tsv -o output_samba/
           [-d|--download] [-a | --analyse] [-h|--help]
     
