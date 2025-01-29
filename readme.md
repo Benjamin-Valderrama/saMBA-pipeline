@@ -1,6 +1,6 @@
 ## saMBA-pipeline
 
-This repository has the scripts used to build the *S*outh *A*merican *M*icro*B*iome *A*rchive (saMBA). Although this workflow was developed to generate an archive of faecal microbime samples from South Americans, the scripts can be used to create archives of other neglected populations, or to standardise the *in-bulnk* analysis of multiple 16s sequencing projects
+This repository has the scripts used to build the **S**outh **A**merican **M**icro**B**iome **A**rchive (saMBA). Although this workflow was developed to generate an archive of faecal microbime samples from South Americans, the scripts can be used to create archives of other neglected populations, or to standardise the *in-bulnk* analysis of multiple 16s sequencing projects
 
 ## Preparation
 
