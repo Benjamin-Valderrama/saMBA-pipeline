@@ -69,3 +69,4 @@ Add DOI of the preprint...
 * To build a setup.sh script that makes the installation of this pipeline even easier for end-users.
 * To add the option the option to run PICRUSt2 for each project analysed
 * To add a feature that allows user to set all key arguments of DADA2 and PICRUSt2 through a file of arguemnts
+* Move it to a Snakemake workflow
