@@ -11,6 +11,7 @@ Every software required for this analysis is detailed in `env/samba.yaml`. Each 
 git clone https://github.com/Benjamin-Valderrama/saMBA-pipeline
 
 # build an exact local copy of the environment required for this analysis
+# substitute 'micromamba' below with the name of the sofware manager you use, if needed
 micromamba env create --name samba --file saMBA-pipeline/env/samba.yaml
 
 # adding the folder `bin/` to path
