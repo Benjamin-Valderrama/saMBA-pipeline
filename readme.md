@@ -8,7 +8,7 @@ Every software required for this analysis is detailed in `env/samba.yaml`. Each 
 
 ```
 # make a local copy of this repository
-git clone https://github.com/Benjamin-Valderrama/saMBA-pipeline/blob/main/env/samba.yaml
+git clone https://github.com/Benjamin-Valderrama/saMBA-pipeline
 
 # build an exact local copy of the environment required for this analysis
 micromamba env create --name samba --file saMBA-pipeline/env/samba.yaml
