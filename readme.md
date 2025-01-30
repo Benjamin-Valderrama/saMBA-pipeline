@@ -19,9 +19,6 @@ export PATH=$(pwd)/saMBA-pipeline/bin:$PATH
 
 # give execute permissions to the main script
 chmod +x saMBA-pipeline/bin/saMBA.sh
-
-# the environment has to be activated before it can be used
-micromamba activate samba
 ```
 
 ## Usage
@@ -51,6 +48,9 @@ Which should print the following message
 Thus, saMBA.sh requires an input file and a path to a folder where the outputs will be direced. In this repository, we have added a the `examples/test.tsv` file as a demo to show how users how to work with this pipeline
 
 ```
+# the environment has to be activated before it can be used
+micromamba activate samba
+
 # with the samba environment activated, run the main script in the background
 saMBA.sh -i saMBA-pipeline/examples/test.tsv -o archive > progress.log &
 ```
