@@ -81,7 +81,7 @@ done
 # create a folder for log files
 mkdir -p "${output}/nohups"
 # activate environment
-eval "$(micromamba shell hook --shell bash)" ; micromamba activate samba
+#eval "$(micromamba shell hook --shell bash)" ; micromamba activate samba
 
 
 
@@ -157,5 +157,5 @@ done
 bash ${SCRIPTS_FOLDER}/consolidate_projects.sh $output
 
 
-micromamba deactivate
+#micromamba deactivate
 
