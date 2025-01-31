@@ -56,7 +56,7 @@ Thus, saMBA.sh requires an input file and a path to a folder where the outputs w
 micromamba activate samba
 
 # with the samba environment activated, run the main script in the background
-saMBA.sh -i saMBA-pipeline/demo/test.tsv -o archive > progress.log -f -r path/to/database &
+saMBA.sh -i saMBA-pipeline/demo/test.tsv -o archive -f -r path/to/database > progress.log &
 ```
 
 ## Output description
