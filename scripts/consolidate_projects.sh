@@ -13,26 +13,26 @@ CONSOLIDATION_SCRIPTS="${SCRIPTS_FOLDER}/consolidation" # Folder with scripts us
 
 # clean count tables of each project are consolidated into one table
 echo "PROGRESS -- consolidating count tables"
-Rscript ${CONSOLIDATION_SCRIPTS}/consolidate_archive_count_table.R $output/ &> $output/nohups/count_tables_consolidation.log &
+Rscript ${CONSOLIDATION_SCRIPTS}/consolidate_archive_count_table.R $output/ > $output/logs/count_tables_consolidation.log 2>&1
 last_pid=$!
 wait $last_pid
 
 # ENA file reports of each project are consolidated into one table
 echo "PROGRESS -- consolidating ENA file reports"
-Rscript ${CONSOLIDATION_SCRIPTS}/consolidate_ena_filereports.R $output/ &> $output/nohups/ena_filereports_consolidation.log &
+Rscript ${CONSOLIDATION_SCRIPTS}/consolidate_ena_filereports.R $output/ > $output/logs/ena_filereports_consolidation.log 2>&1
 last_pid=$!
 wait $last_pid
 
 # files tracking the reads of each sample through each step of the DADA2 pipeline are consolidated
 echo "PROGRESS -- consolidating 'track_reads_through_pipeline' files"
-Rscript ${CONSOLIDATION_SCRIPTS}/consolidate_track_reads.R $output/ &> $output/nohups/track_reads_consolidation.log &
+Rscript ${CONSOLIDATION_SCRIPTS}/consolidate_track_reads.R $output/ > $output/logs/track_reads_consolidation.log 2>&1
 last_pid=$!
 wait $last_pid
 
 # we merge file reports and track_reads files. This removes all the samples in the ENA metadata
 # that weren't included in the actual analysis.
 echo "PROGRESS -- merge ENA file reports and track_reads_through_pipeline"
-Rscript ${CONSOLIDATION_SCRIPTS}/consolidate_metadata.R $output/ &> $output/nohups/metadata_consolidation.log &
+Rscript ${CONSOLIDATION_SCRIPTS}/consolidate_metadata.R $output/ > $output/logs/metadata_consolidation.log 2>&1
 last_pid=$!
 wait $last_pid
 
