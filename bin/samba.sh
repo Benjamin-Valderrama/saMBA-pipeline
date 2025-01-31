@@ -92,16 +92,23 @@ done
 
 
 # Step 1 -- Preparation
-# check that reference database exists
-if [ ! -f "$refdb" ]; then
-    echo "[ERROR] -- $refdb doesn't exists"
-    exit 1
+# create a folder to store the log files with the progress of the workflow
+mkdir -p "${output}/logs"
+
+# If running the analysis, an input file and a reference db must be provided
+if [ "$analyse" = true ] || [ "$full" == "true" ]; then
+
+    # check if the reference was provided
+    if [ -z "$refdb" ]; then
+        echo "[ERROR] -- A reference must be provided using the option -r"
+        exit 1
+    # if provided, check that it exists
+    elif [ ! -f "$refdb" ]; then
+	echo "[ERROR] -- The reference $refdb doesn't exists"
+	exit 1
+    fi
 fi
 
-if [ "$full" = true ] || [ "$download" = true ] || [ "$analyse" = true ]; then
-    # create a folder for log files
-    mkdir -p "${output}/logs"
-fi
 
 
 # Step 2 -- Data download:
@@ -176,7 +183,7 @@ if [ "$full" = true ] || [ "$analyse" = true ]; then
 fi
 
 # Step 4 -- Project integration
-if [ "$full" = true ] || [ "$consolidate" = true ];
+if [ "$full" = true ] || [ "$consolidate" = true ]; then
     # one .out file is generated for each step of the following script
-    bash ${CONSOLIDATION_FOLDER}/consolidate_projects.sh $output
+    bash ${SCRIPTS_FOLDER}/consolidate_projects.sh $output
 fi
