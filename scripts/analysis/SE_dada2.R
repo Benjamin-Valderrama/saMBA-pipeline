@@ -1,6 +1,7 @@
 ################################################
 ####   ARGUMENTS GIVEN BY THE MAIN SCRIPT   ####
 study_folder <- commandArgs(trailingOnly = TRUE)[1]
+ref_db <- commandArgs(trailingOnly = TRUE)[2]
 
 ################################################
 
@@ -128,7 +129,7 @@ write.table(x = track, file = paste0(study_folder, "/01.dada2/SE_track_reads_thr
 
 # ASSIGN TAXONOMY
 print("ASSIGN TAXONOMY ...")
-tax <- assignTaxonomy(seqtab.nochim, "/data/databases/SILVA/silva_nr99_v138.2_train_set.fa.gz", multithread=TRUE, tryRC = TRUE)
+tax <- assignTaxonomy(seqtab.nochim, ref_db, multithread=TRUE, tryRC = TRUE)
 
 # the taxonomy ranks that can't be assigned are forced to be a "NA" string instead of NA value
 # this will make the removal of chloroplasts and mitochondria easier as the NA (ASV unassigned at certain taxonomic level)
