@@ -49,7 +49,10 @@ If the preparation steps were correctly followed, then you should see this:
       -h, --help           Display this help message.
 ```
 
-Thus, saMBA.sh requires an input file and a path to a folder where the outputs will be direced. To illustrate how this workflow works, we added a small file in `demo/test.tsv` that can be used as input, and a small version of a reference database in `demo/reduced_silva.fa.gz`. Notice that you will need a full database for your own data. A popular option is [SILVA](https://www.arb-silva.de/), that can be downloaded from their website.
+Thus, saMBA.sh requires an input file and a path to a folder where the outputs will be direced. 
+To illustrate how this workflow works, we added a small file in `demo/test.tsv` that can be used as input, and a small version of a reference database in `demo/reduced_silva.fa.gz`. 
+
+Notice that you will need a full database for your own data. A popular option is [SILVA](https://www.arb-silva.de/), that can be downloaded from their website.
 
 ```
 # the environment has to be activated before it can be used.
