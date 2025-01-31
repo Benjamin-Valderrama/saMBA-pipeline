@@ -7,8 +7,8 @@ files_downloaded=$(ls $bioproject/00.rawdata/*.fastq.gz | wc -l)
 
 # if ls gives error, it is redirected to the library_layout.out file.
 # ls will give error if there are no _1 and _2 files (i.e., when the project is single_end)
-num_forward_files=$(ls $bioproject/00.rawdata/*_1.fastq.gz 2>> $bioproject/nohups/lib_layout.out | wc -l)
-num_reverse_files=$(ls $bioproject/00.rawdata/*_2.fastq.gz 2>> $bioproject/nohups/lib_layout.out | wc -l)
+num_forward_files=$(ls $bioproject/00.rawdata/*_1.fastq.gz 2>> $bioproject/logs/lib_layout.out | wc -l)
+num_reverse_files=$(ls $bioproject/00.rawdata/*_2.fastq.gz 2>> $bioproject/logs/lib_layout.out | wc -l)
 
 
 # If there is at least one file downloaded...
