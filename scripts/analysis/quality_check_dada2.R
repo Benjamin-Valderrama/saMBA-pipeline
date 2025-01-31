@@ -122,15 +122,15 @@ quality_check_report <- paste0("QC 1 - nonchimeric reads > 50% of total reads: "
 
 # Export report to nohups
 # If there is no report (i.e., first time dada2 runs)
-if(!file.exists(paste0(study_folder, "/nohups/QC_report.log"))){
+if(!file.exists(paste0(study_folder, "/logs/QC_report.log"))){
 
 	write_lines(x = quality_check_report,
-		    file = paste0(study_folder, "/nohups/QC_report.log"))
+		    file = paste0(study_folder, "/logs/QC_report.log"))
 
 } else {
 	# If there was a report already...#
 	write_lines(x = quality_check_report,
-                    file = paste0(study_folder, "/nohups/QC_report_rerun.log"))
+                    file = paste0(study_folder, "/logs/QC_report_rerun.log"))
 }
 
 

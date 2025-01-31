@@ -107,4 +107,4 @@ cat(paste(excluded_samples, collapse = "\n"))
 
 # Write clean count table and list of removed samples
 write_tsv(x = clean_count_table, file = paste0(project_folder, "/outputs/clean_count_table_asvs.tsv"))
-write_lines(x = samples_to_remove, file = paste0(project_folder, "/nohups/samples_removed_from_final_count_table.txt"))
+write_lines(x = samples_to_remove, file = paste0(project_folder, "/logs/samples_removed_from_final_count_table.txt"))
