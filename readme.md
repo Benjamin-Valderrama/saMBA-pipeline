@@ -30,16 +30,20 @@ saMBA.sh --help
 
 Which should print the following message
 ```
-    Usage: $0 -i accession_codes.tsv -o output_samba/
-          [-d|--download] [-a | --analyse] [-h|--help]
-    
+    Usage: samba.sh -i accession_codes.tsv -o output --full --refdb path/to/database
+
     Required arguemnts:
       -i, --input          TSV file with two columns: project accessions and sample accessions from ENA.
       -o, --output         Path to folder where outputs will be saved.
-
+    
     Workflow arguments:
+      -f, --full           Run the full workflow with all the steps described below
       -d, --download       Run data download [uses fastq-dl].
-      -a, --analyse        Run reads quality check and alignment [uses kneaddata].
+      -a, --analyse        Run reads quality check and alignment.
+      -c, --consolidate    Join the outputs of all projects analysed
+    
+    Database:
+      -r, --refdb          [Required if --analyse is used] Path to the taxonomy reference database
     
     Optional arguments:
       -h, --help           Display this help message.
@@ -52,7 +56,7 @@ Thus, saMBA.sh requires an input file and a path to a folder where the outputs w
 micromamba activate samba
 
 # with the samba environment activated, run the main script in the background
-saMBA.sh -i saMBA-pipeline/examples/test.tsv -o archive > progress.log &
+saMBA.sh -i saMBA-pipeline/demo/test.tsv -o archive > progress.log -f -r path/to/database &
 ```
 
 ## Output description
