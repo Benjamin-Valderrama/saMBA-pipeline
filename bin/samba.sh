@@ -13,6 +13,7 @@ refdb=""
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 saMBA_ROOT="$(dirname "$SCRIPT_DIR")"
 SCRIPTS_FOLDER="$saMBA_ROOT/scripts"
+CONSOLIDATION_FOLDER="$saMBA_ROOT/consolidation"
 
 function display_usage() {
     echo "Usage: $0 -i accession_codes.tsv -o output"
@@ -99,7 +100,7 @@ fi
 
 if [ "$full" = true ] || [ "$download" = true ] || [ "$analyse" = true ]; then
     # create a folder for log files
-    mkdir -p "${output}/nohups"
+    mkdir -p "${output}/logs"
 fi
 
 
@@ -120,14 +121,14 @@ if [ "$full" = true ] || [ "$download" = true ]; then
 
             # create a directory for the bioproject if it doesn't already exist
             mkdir -p "$output/$bioproject/00.rawdata"
-            mkdir -p "$output/$bioproject/nohups"
+            mkdir -p "$output/$bioproject/logs"
             mkdir -p "$output/$bioproject/outputs"
 
        fi
 
         # download data
-        echo "PROGRESS -- Downloading raw data of project $n: ${bioproject}" > ${output}/nohups/${bioproject}.log
-        echo "Downloading : $run_accession" >> $output/$bioproject/nohups/download.log
+        echo "PROGRESS -- Downloading raw data of project $n: ${bioproject}" > ${output}/logs/${bioproject}.log
+        echo "Downloading : $run_accession" >> $output/$bioproject/logs/download.log
 
         fastq-dl --accession $run_accession --outdir $output/$bioproject/00.rawdata --silent
 
@@ -154,7 +155,7 @@ if [ "$full" = true ] || [ "$analyse" = true ]; then
     cut -f1 $input | tail -n +2 | uniq | while read -r bioproject; do
 
         ((n++))
-        echo "PROGRESS -- Analysing project $n: ${bioproject}" >> ${output}/nohups/${bioproject}.log
+        echo "PROGRESS -- Analysing project $n: ${bioproject}" >> ${output}/logs/${bioproject}.log
 
         # Download ENA metada for the bioproject
         fastq-dl --accession $bioproject --outdir "$output/$bioproject/00.rawdata" --only-download-metadata --silent
@@ -163,7 +164,7 @@ if [ "$full" = true ] || [ "$analyse" = true ]; then
         # launch the analysis of the projects
         # while overall progress of the analysis goes to ${output}/nohups/${bioproject}.out,
         # step-specific logs can be found in ${output}/${bioproject}/nohups/
-        bash ${SCRIPTS_FOLDER}/analyse_project.sh -s ${output}/${bioproject} --run_dada2 --refdb $refdb >> ${output}/nohups/${bioproject}.log &
+        bash ${SCRIPTS_FOLDER}/analyse_project.sh -s ${output}/${bioproject} --run_dada2 --refdb $refdb >> ${output}/logs/${bioproject}.log &
 
         # save the PID of the process and add that to the log file to keep track of the analysis steps
         last_pid=$!
@@ -177,8 +178,5 @@ fi
 # Step 4 -- Project integration
 if [ "$full" = true ] || [ "$consolidate" = true ];
     # one .out file is generated for each step of the following script
-    bash ${SCRIPTS_FOLDER}/consolidate_projects.sh $output
+    bash ${CONSOLIDATION_FOLDER}/consolidate_projects.sh $output
 fi
-
-#micromamba deactivate
-
