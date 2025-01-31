@@ -163,7 +163,7 @@ if [ "$full" = true ] || [ "$analyse" = true ]; then
         # launch the analysis of the projects
         # while overall progress of the analysis goes to ${output}/nohups/${bioproject}.out,
         # step-specific logs can be found in ${output}/${bioproject}/nohups/
-        bash ${SCRIPTS_FOLDER}/analyse_project.sh -s ${output}/${bioproject} --run_dada2 --db $refdb >> ${output}/nohups/${bioproject}.log &
+        bash ${SCRIPTS_FOLDER}/analyse_project.sh -s ${output}/${bioproject} --run_dada2 --refdb $refdb >> ${output}/nohups/${bioproject}.log &
 
         # save the PID of the process and add that to the log file to keep track of the analysis steps
         last_pid=$!
