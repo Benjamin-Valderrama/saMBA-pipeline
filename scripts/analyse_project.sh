@@ -77,12 +77,12 @@ if [ "$run_all" = true ] || [ "$run_dada2" = true ]; then
     if [ "$library_layout" = paired_end ]; then
         # run dada2 in pair end mode
         echo "PROGRESS -- Performing paired end taxonomic profiling with DADA2."
-        Rscript ${ANALYSIS_SCRIPTS}/PE_dada2.R ${study_folder} ${refdb} > ${study_folder}/nohups/dada2.log
+        Rscript ${ANALYSIS_SCRIPTS}/PE_dada2.R ${study_folder} ${refdb} > ${study_folder}/nohups/dada2.log 2>&1
 
     elif [ "$library_layout" = single_end ]; then
         # run dada2 in single end mode
         echo "PROGRESS -- Performing single end taxonomic profiling with DADA2."
-        Rscript ${ANALYSIS_SCRIPTS}/SE_dada2.R ${study_folder} ${refdb} > ${study_folder}/nohups/dada2.log
+        Rscript ${ANALYSIS_SCRIPTS}/SE_dada2.R ${study_folder} ${refdb} > ${study_folder}/nohups/dada2.log 2>&1
 
     else
 	echo "[ERROR] -- Library layout undetermined. Project can't be included."
@@ -109,7 +109,7 @@ elif [[ $library_layout == "paired_end" ]] && [[ $quality_check != "PASSED" ]]; 
     library_layout="single_end"
 
     echo "PROGRESS -- Re-analysing project as : ${library_layout}"
-    Rscript ${ANALYSIS_SCRIPTS}/SE_dada2.R ${study_folder} ${refdb} > ${study_folder}/nohups/dada2.log
+    Rscript ${ANALYSIS_SCRIPTS}/SE_dada2.R ${study_folder} ${refdb} > ${study_folder}/nohups/dada2.log 2>&1
 
     # Check the results of the single end re run
     quality_check_rerun=$( Rscript ${ANALYSIS_SCRIPTS}/quality_check_dada2.R ${study_folder} ${library_layout})
@@ -134,14 +134,14 @@ fi
 # 4. If project can be included, remove samples with low quality and keep the rest...
 if [[ $quality_check == "PASSED" ]] || [[ $quality_check_rerun == "PASSED" ]]; then
     echo "PROGRESS -- Removing samples with low quality from project."
-    Rscript ${ANALYSIS_SCRIPTS}/filter_samples.R ${study_folder} ${library_layout} > ${study_folder}/nohups/filter_samples.log
+    Rscript ${ANALYSIS_SCRIPTS}/filter_samples.R ${study_folder} ${library_layout} > ${study_folder}/nohups/filter_samples.log 2>&1
 fi
 
 
 # 5. Collapse count table from ASVs to genus (keep both as outputs)
 if [[ $quality_check == "PASSED" ]] || [[ $quality_check_rerun == "PASSED" ]]; then
     echo "PROGRESS -- Collapsing ASVs from clean count table to genus"
-    Rscript ${ANALYSIS_SCRIPTS}/collapse_asv_to_genus.R ${study_folder} > ${study_folder}/nohups/collapse_count_table.log
+    Rscript ${ANALYSIS_SCRIPTS}/collapse_asv_to_genus.R ${study_folder} > ${study_folder}/nohups/collapse_count_table.log 2>&1
 
    echo "PROGRESS -- ${study_folder} successfully analysed"
 fi
