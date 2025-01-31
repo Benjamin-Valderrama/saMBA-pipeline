@@ -58,7 +58,7 @@ To illustrate how this workflow works, we added a small file in `demo/test.tsv` 
 micromamba activate samba
 
 # with the samba environment activated, run the main script in the background.
-samba.sh -i saMBA-pipeline/demo/test.tsv -o archive -f -r path/to/database > progress.log &
+samba.sh -i saMBA-pipeline/demo/test.tsv -o archive -f -r saMBA-pipeline/demo/reduced_silva.fa.gz > progress.log &
 ```
 Notice that you will need a full database for your own data. A popular option is [SILVA](https://www.arb-silva.de/), that can be downloaded from their website.
 
