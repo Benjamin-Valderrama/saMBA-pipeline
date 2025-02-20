@@ -79,7 +79,7 @@ if [ "$run_all" = true ] || [ "$run_dada2" = true ]; then
         echo "PROGRESS -- Performing paired end taxonomic profiling with DADA2."
         Rscript ${ANALYSIS_SCRIPTS}/PE_dada2.R ${study_folder} ${refdb} > ${study_folder}/logs/dada2.log 2>&1
 
-    elif [ "$library_layout" = single_end ]; then
+    elif [ "$library_layout" = single_end ] || [ "$library_layout" = forced_single_end ] ; then
         # run dada2 in single end mode
         echo "PROGRESS -- Performing single end taxonomic profiling with DADA2."
         Rscript ${ANALYSIS_SCRIPTS}/SE_dada2.R ${study_folder} ${refdb} > ${study_folder}/logs/dada2.log 2>&1
@@ -124,7 +124,7 @@ elif [[ $library_layout == "paired_end" ]] && [[ $quality_check != "PASSED" ]]; 
 
 
 # If library layout was single end and quality_check is not passed (i.e., fails in any check)...
-elif [[ $library_layout == "single_end" ]] && [[ $quality_check != "PASSED"  ]]; then
+elif [[ $quality_check != "PASSED"  && ( "$library_layout" == "single_end" || "$library_layout" == "forced_single_end" ) ]]; then
     echo "PROGRESS -- Quality check: FAILED."
     echo "[ERROR] -- Project can't be included."
     exit 1
