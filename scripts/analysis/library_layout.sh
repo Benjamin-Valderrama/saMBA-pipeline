@@ -25,7 +25,6 @@ if [[ $files_downloaded -gt 0 ]]; then
 	# if the numbers of forward and reverse files doesn't match,
 	# library layout is forced to be single end
 	elif [[ $num_forward_files -ne $num_reverse_files ]]; then
-                rm $project_folder/00.rawdata/*_2.fastq.gz
         	echo "forced_single_end"
 	fi
 
