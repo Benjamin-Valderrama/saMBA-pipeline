@@ -109,7 +109,7 @@ seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE
 print("TRACK READS THROUGH THE PIPELINE ...")
 
 getN <- function(x){sum(getUniques(x))}
-track <- cbind(out, sapply(mergers, getN), sapply(dadasF, getN), sapply(dadasR, getN), rowSums(seqtab.nochim))
+track <- cbind(out, sapply(dadasF, getN), sapply(dadasR, getN), sapply(mergers, getN), rowSums(seqtab.nochim))
 
 colnames(track) <- c("input", "filtered", "denoisedF", "denoisedR","merged", "nochim")
 rownames(track) <- sample.names
