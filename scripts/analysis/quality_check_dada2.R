@@ -1,22 +1,18 @@
 suppressMessages(library(tidyverse))
 
-# Read from analysis.sh
+# Read from main script
 study_folder <- commandArgs(trailingOnly = TRUE)[1]
 library_layout <- commandArgs(trailingOnly = TRUE)[2]
-
-# Check if read properly
-#cat(library_layout)
 
 
 # Determine input file based on library layout
 if(library_layout == "paired_end"){
 	file_tracking_reads = "/01.dada2/track_reads_through_pipeline.tsv"
 
-} else if(library_layout == "single_end"){
+} else if(grepl(x = library_layout, pattern = "single_end")){
+	# this will be check for single_end and forced_single_end
 	file_tracking_reads = "/01.dada2/SE_track_reads_through_pipeline.tsv"
 }
-
-#cat(file_tracking_reads)
 
 # Read file with the status of the number of reads per step of the DADA2 pipeline
 dada2_diagnostic <- read.delim(file = paste0(study_folder, file_tracking_reads),
@@ -56,7 +52,8 @@ quality_check_1 <- function(df){
 #' As this is a paired end layout, we use merged sequences to calculate the % of chimeras.
 PE_quality_check_2 <- function(df){
 	df %>%
-	# get first 10 samples
+	# get first 10 samples with at least 1 merged ASV
+	filter(merged > 0) %>%
 	head(n = 10) %>%
 	# Calculate the percentage of chimeras per sample
 	mutate(percentage_of_chimera = (1 - (nochim/merged)) * 100,
@@ -78,7 +75,8 @@ PE_quality_check_2 <- function(df){
 #' As this is a single end layout, we use denoised forward reads to calculate the % of chimeras.
 SE_quality_check_2 <- function(df){
         df %>%
-        # get first 10 samples
+        # get first 10 samples with at least 1 merged ASV
+        filter(denoisedF > 0) %>%
         head(n = 10) %>%
         # Calculate the percentage of chimeras per sample
         mutate(percentage_of_chimera = (1 - (nochim/denoisedF)) * 100,
@@ -110,7 +108,8 @@ pass_quality_check_1 <- quality_check_1(dada2_diagnostic)
 if(library_layout == "paired_end"){
 	pass_quality_check_2 <- PE_quality_check_2(dada2_diagnostic)
 
-} else if(library_layout == "single_end"){
+} else if(grepl(x = library_layout, pattern = "single_end")){
+	# this condition handles single_end and forced_single_end projects
 	pass_quality_check_2 <- SE_quality_check_2(dada2_diagnostic)
 }
 
@@ -120,7 +119,7 @@ quality_check_report <- paste0("QC 1 - nonchimeric reads > 50% of total reads: "
 
 
 
-# Export report to nohups
+# Export report to 'logs' folder
 # If there is no report (i.e., first time dada2 runs)
 if(!file.exists(paste0(study_folder, "/logs/QC_report.log"))){
 
@@ -128,7 +127,7 @@ if(!file.exists(paste0(study_folder, "/logs/QC_report.log"))){
 		    file = paste0(study_folder, "/logs/QC_report.log"))
 
 } else {
-	# If there was a report already...#
+	# If there was a report already...
 	write_lines(x = quality_check_report,
                     file = paste0(study_folder, "/logs/QC_report_rerun.log"))
 }
@@ -137,7 +136,6 @@ if(!file.exists(paste0(study_folder, "/logs/QC_report.log"))){
 
 
 # Determine if the analysis was successful or if it needs to be re done (based on library layout)
-# cat("Final decision")
 
 # If both quality checks are ok
 if(pass_quality_check_1 & pass_quality_check_2) {
