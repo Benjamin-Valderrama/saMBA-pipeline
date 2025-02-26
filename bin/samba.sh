@@ -131,7 +131,7 @@ if [ "$full" = true ] || [ "$download" = true ]; then
             mkdir -p "$output/$bioproject/logs"
             mkdir -p "$output/$bioproject/outputs"
 
-       fi
+        fi
 
         # download data
         echo "PROGRESS -- Downloading raw data of project $n: ${bioproject}" > ${output}/logs/${bioproject}.log
@@ -165,7 +165,7 @@ if [ "$full" = true ] || [ "$analyse" = true ]; then
         echo "PROGRESS -- Analysing project $n: ${bioproject}" >> ${output}/logs/${bioproject}.log
 
         # Download ENA metada for the bioproject
-        fastq-dl --accession $bioproject --outdir "$output/$bioproject/00.rawdata" --only-download-metadata --silent
+#        fastq-dl --accession $bioproject --outdir "$output/$bioproject/00.rawdata" --only-download-metadata --silent
 
 
         # launch the analysis of the projects
@@ -184,6 +184,25 @@ fi
 
 # Step 4 -- Project integration
 if [ "$full" = true ] || [ "$consolidate" = true ]; then
-    # one .out file is generated for each step of the following script
+
+    # counter of analysed projects
+    n=0
+
+    # Download INSDC metadata for each project data
+    cut -f1 $input | tail -n +2 | uniq | while read -r bioproject; do
+        ((n++))
+        echo "PROGRESS -- Downloading metadata of project $n: ${bioproject}" >> ${output}/logs/${bioproject}.log
+        # Download ENA metada for the bioproject
+        fastq-dl --accession $bioproject \
+		--outdir "$output/$bioproject" \
+		--only-download-metadata \
+		--silent \
+		--prefix "insdc-metadata" >> ${output}/logs/${bioproject}.log &
+
+	last_pid=$!
+        wait "$last_pid"
+    done
+
+    # one .log file is generated for each step of the following script
     bash ${SCRIPTS_FOLDER}/consolidate_projects.sh $output
 fi

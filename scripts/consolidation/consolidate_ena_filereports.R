@@ -7,7 +7,7 @@ folder_with_analysed_projects <- commandArgs(trailingOnly = TRUE)[1]
 
 # path to the file reports for every project 
 paths_to_file_reports <- list.files(path = folder_with_analysed_projects, 
-	   pattern = "fastq-run-info.tsv", 
+	   pattern = "insdc-metadata-run-info.tsv", 
 	   recursive = TRUE)
 #print(paths_to_file_reports)
 

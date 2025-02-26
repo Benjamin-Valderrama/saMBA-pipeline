@@ -2,6 +2,7 @@ suppressMessages(library(tidyverse))
 
 folder_with_analysed_projects <- commandArgs(trailingOnly = TRUE)[1]
 
+# get consolidated file reports and track_reads
 file_reports <- read_tsv(file = paste0(folder_with_analysed_projects, "consolidated/ena_file_reports.tsv"), show_col_type = FALSE)
 track_reads <- read_tsv(file = paste0(folder_with_analysed_projects, "consolidated/track_reads.tsv"), show_col_type = FALSE)
 
