@@ -175,7 +175,7 @@ print("WRITING DADA2 OUTPUTS ...")
 
 # count table
 write.table(x = clean_count_table_tax,
-	    file = paste0(study_folder, "/01.dada2/SE_count_table.tsv"),
+	    file = paste0(study_folder, "/01.dada2/SE_ASV_count_table.tsv"),
 	    sep = "\t", quote = FALSE,
 	    row.names = TRUE, col.names = TRUE)
 

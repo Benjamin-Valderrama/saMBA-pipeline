@@ -5,18 +5,14 @@ cat("PROGRESS -- Collapsing ASVs from clean count table to genus")
 project_folder <- commandArgs(trailingOnly = TRUE)[1] 
 
 
-# import count table after removing samples
-clean_count_table <- read_tsv(file = paste0(project_folder, "/outputs/clean_count_table_asvs.tsv"), 
-			      show_col_types = FALSE)
+# import ASV-level count table
+asv_count_table <- read.delim(file = paste0(project_folder, "/outputs/ASV_count_table.tsv"))
 
 
-# check how did they consolidate datasets from different proejects
-clean_count_table %>% 
-    select(!ASV) %>%
-    group_by(full_taxonomy) %>%
-    summarise(across(where(is.numeric), .fn = ~sum(.x, na.rm = TRUE))) %>%
-    filter(!is.na(full_taxonomy)) %>%
+# collapse ASV-abundances by full taxonomic information
+asv_count_table %>% 
+    select(!sequence) %>%
+    summarise(across(where(is.numeric), .fn = ~sum(.x, na.rm = TRUE)), 
+	      .by = full_taxonomy) %>%
     relocate(full_taxonomy) %>%
-    write_tsv(x = ., file = paste0(project_folder, "/outputs/clean_count_table_genus.tsv"))
-
-
+    write_tsv(x = ., file = paste0(project_folder, "/outputs/genus_count_table.tsv"))
