@@ -91,7 +91,7 @@ if [ "$run_all" = true ] || [ "$run_dada2" = true ]; then
 fi
 
 
-# 3. Check the quality of the project. Re run paired end projects as single end if required.
+# 2. Check the quality of the project. Re run paired end projects as single end if required.
 quality_check=$( Rscript ${ANALYSIS_SCRIPTS}/quality_check_dada2.R ${study_folder} ${library_layout})
 echo "PROGRESS -- Quality check : ${quality_check}"
 
@@ -124,21 +124,14 @@ elif [[ $library_layout == "paired_end" ]] && [[ $quality_check != "PASSED" ]]; 
 
 
 # If library layout was single end and quality_check is not passed (i.e., fails in any check)...
-elif [[ $quality_check != "PASSED"  && ( "$library_layout" == "single_end" || "$library_layout" == "forced_single_end" ) ]]; then
+elif [[ "$library_layout" =~ single_end$  && $quality_check != "PASSED" ]]; then
     echo "PROGRESS -- Quality check: FAILED."
     echo "[ERROR] -- Project can't be included."
     exit 1
 fi
 
 
-# 4. If project can be included, remove samples with low quality and keep the rest...
-if [[ $quality_check == "PASSED" ]] || [[ $quality_check_rerun == "PASSED" ]]; then
-    echo "PROGRESS -- Removing samples with low quality from project."
-    Rscript ${ANALYSIS_SCRIPTS}/filter_samples.R ${study_folder} ${library_layout} > ${study_folder}/logs/filter_samples.log 2>&1
-fi
-
-
-# 5. Collapse count table from ASVs to genus (keep both as outputs)
+# 3. If project can be included, collapse count table from ASVs to genus (keep both as outputs)
 if [[ $quality_check == "PASSED" ]] || [[ $quality_check_rerun == "PASSED" ]]; then
     echo "PROGRESS -- Collapsing ASVs from clean count table to genus"
     Rscript ${ANALYSIS_SCRIPTS}/collapse_asv_to_genus.R ${study_folder} > ${study_folder}/logs/collapse_count_table.log 2>&1
