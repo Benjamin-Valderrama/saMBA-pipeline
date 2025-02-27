@@ -92,7 +92,7 @@ fi
 
 
 # 2. Check the quality of the project. Re run paired end projects as single end if required.
-quality_check=$( Rscript ${ANALYSIS_SCRIPTS}/quality_check_dada2.R ${study_folder} ${library_layout})
+quality_check=$( Rscript ${ANALYSIS_SCRIPTS}/project_quality_check_dada2.R ${study_folder} ${library_layout})
 echo "PROGRESS -- Quality check : ${quality_check}"
 
 # If quality check was an empty string
@@ -101,39 +101,57 @@ if [[ -z $quality_check ]]; then
     echo "[ERROR] -- Forcing the end of the analysis."
     exit 1
 
-
-# If library layout was paired end and quality_check is not passed (i.e., fails in any check)...
-elif [[ $library_layout == "paired_end" ]] && [[ $quality_check != "PASSED" ]]; then
-
-    # We run DADA2 for the second time as if the library layout were single end
-    library_layout="single_end"
-
-    echo "PROGRESS -- Re-analysing project as : ${library_layout}"
-    Rscript ${ANALYSIS_SCRIPTS}/SE_dada2.R ${study_folder} ${refdb} > ${study_folder}/logs/dada2.log 2>&1
-
-    # Check the results of the single end re run
-    quality_check_rerun=$( Rscript ${ANALYSIS_SCRIPTS}/quality_check_dada2.R ${study_folder} ${library_layout})
-    echo "PROGRESS -- Quality check after re-analysis: ${quality_check_rerun}"
-
-    # If failed for a second time...
-    if [[ $quality_check_rerun != "PASSED" ]]; then
-    echo "[ERROR] -- Quality check: FAILED."
-    echo "[ERROR] -- Project can't be included."
-    exit 1
-    fi
-
-
-# If library layout was single end and quality_check is not passed (i.e., fails in any check)...
-elif [[ "$library_layout" =~ single_end$  && $quality_check != "PASSED" ]]; then
+# If library layout was single end (or forced_single_end) and quality_check failed ...
+# discard the project
+elif [[ "$library_layout" =~ single_end$  && $quality_check = *FAILED* ]]; then
     echo "PROGRESS -- Quality check: FAILED."
     echo "[ERROR] -- Project can't be included."
     exit 1
 fi
 
+# If library layout was paired end and quality_check contains 'FAILED' (i.e., fails any check)...
+# rerun the analysis as single end
+elif [[ $library_layout == "paired_end" && $quality_check = *FAILED* ]]; then
 
-# 3. If project can be included, collapse count table from ASVs to genus (keep both as outputs)
+    # We run DADA2 for the second time as if the library layout was single end
+    library_layout="single_end"
+
+    echo "PROGRESS -- Re-analysing project as : ${library_layout}"
+    Rscript ${ANALYSIS_SCRIPTS}/SE_dada2.R ${study_folder} ${refdb} > ${study_folder}/logs/dada2.log 2>&1
+
+    # Run quality check for the single end re analysis
+    quality_check_rerun=$( Rscript ${ANALYSIS_SCRIPTS}/project_quality_check_dada2.R ${study_folder} ${library_layout})
+    echo "PROGRESS -- Quality check after re-analysis: ${quality_check_rerun}"
+
+
+    # Discard project if re analysis failed
+    if [[ $quality_check_rerun = *FAILED* ]]; then
+	echo "[ERROR] -- Quality check: FAILED."
+	echo "[ERROR] -- Project can't be included."
+	exit 1
+    # or if the quality check of the re run is empty
+    elif [[ -z $quality_check_rerun ]]; then
+        echo "[ERROR] -- Quality check: undetermined."
+        echo "[ERROR] -- Forcing the end of the analysis."
+        exit 1
+    fi
+
+# 3. If QC is successful, project can be included:
+# copy ASV count table to 'outputs' folder, then collapse into genus-level count table (keep both as outputs)
 if [[ $quality_check == "PASSED" ]] || [[ $quality_check_rerun == "PASSED" ]]; then
     echo "PROGRESS -- Collapsing ASVs from clean count table to genus"
+
+    # make a copy of the ASV count table and fasta file into the outputs folder
+    if [[ $library_layout == "paired_end" ]]; then
+        cp ${study_folder}/01.dada2/ASV_count_table.tsv ${study_folder}/outputs/ASV_count_table.tsv
+	cp ${study_folder}/01.dada2/ASVs.fa ${study_folder}/outputs/ASVs.fa
+
+    elif [[ "$library_layout" =~ single_end$ ]]; then
+	cp ${study_folder}/01.dada2/SE_ASV_count_table.tsv ${study_folder}/outputs/ASV_count_table.tsv
+        cp ${study_folder}/01.dada2/SE_ASVs.fa ${study_folder}/outputs/ASVs.fa
+    fi
+
+    # collapse count table at ASV-level to genus-level
     Rscript ${ANALYSIS_SCRIPTS}/collapse_asv_to_genus.R ${study_folder} > ${study_folder}/logs/collapse_count_table.log 2>&1
 
    echo "PROGRESS -- ${study_folder} successfully analysed"
