@@ -161,8 +161,10 @@ count_table_tax <- count_table_tax[, !colnames(count_table_tax) %in% taxonomic_r
 # create a clean count table as an output
 clean_count_table_tax <- count_table_tax
 
-# next line added to debug:
-#clean_count_table_tax$sequence <- rownames(clean_count_table_tax)
+# add ASVs DNA sequences as a column
+clean_count_table_tax$sequence <- rownames(clean_count_table_tax)
+
+# simplified rownames
 row.names(clean_count_table_tax) <- paste0("ASV", 1:nrow(clean_count_table_tax))
 
 
@@ -170,11 +172,21 @@ row.names(clean_count_table_tax) <- paste0("ASV", 1:nrow(clean_count_table_tax))
 
 # DADA2 OUTPUTS
 print("WRITING DADA2 OUTPUTS ...")
+
+# count table
 write.table(x = clean_count_table_tax,
 	    file = paste0(study_folder, "/01.dada2/SE_count_table.tsv"),
 	    sep = "\t", quote = FALSE,
 	    row.names = TRUE, col.names = TRUE)
 
+# ASVs fasta file
+#write.table(
+#        x = paste0(">ASV", 1:nrow(clean_count_table_tax), "\n",
+#                  clean_count_table_tax$sequence
+#		  ),
+#        file = paste0(study_folder, "/01.dada2/SE_ASVs.fa"),
+#        quote = FALSE, row.names = FALSE, col.names = FALSE
+#        )
 
 
 # GENERATING THE OUTPUTS FOR PICRUSt2
