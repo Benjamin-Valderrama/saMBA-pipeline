@@ -180,13 +180,13 @@ write.table(x = clean_count_table_tax,
 	    row.names = TRUE, col.names = TRUE)
 
 # ASVs fasta file
-#write.table(
-#        x = paste0(">ASV", 1:nrow(clean_count_table_tax), "\n",
-#                  clean_count_table_tax$sequence
-#		  ),
-#        file = paste0(study_folder, "/01.dada2/SE_ASVs.fa"),
-#        quote = FALSE, row.names = FALSE, col.names = FALSE
-#        )
+write.table(
+        x = paste0(">ASV", 1:nrow(clean_count_table_tax), "\n",
+                  clean_count_table_tax$sequence
+		  ),
+        file = paste0(study_folder, "/01.dada2/SE_ASVs.fa"),
+        quote = FALSE, row.names = FALSE, col.names = FALSE
+        )
 
 
 # GENERATING THE OUTPUTS FOR PICRUSt2
