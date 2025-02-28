@@ -61,9 +61,9 @@ consolidate_table <- function(vector_with_paths, level){
 # Consolidate ASV-level count table and export
 consolidated_asv_ct <- consolidate_table(paths_to_asv_ct, "sequence")
 write_tsv(x = consolidated_asv_ct, 
-	  file = paste0(projects_folder, "consolidated/archive_asv_count_table.tsv"))
+	  file = paste0(projects_folder, "consolidated/asv_count_table.tsv"))
 
 # Consolidate genus-level count table and export
 consolidated_genus_ct <- consolidate_table(paths_to_genus_ct, "full_taxonomy")
 write_tsv(x = consolidated_genus_ct,
-          file = paste0(projects_folder, "consolidated/archive_genus_count_table.tsv"))
+          file = paste0(projects_folder, "consolidated/genus_count_table.tsv"))
