@@ -100,18 +100,19 @@ if [[ -z $quality_check ]]; then
     echo "[ERROR] -- Quality check: undetermined."
     echo "[ERROR] -- Forcing the end of the analysis."
     exit 1
+fi
+
 
 # If library layout was single end (or forced_single_end) and quality_check failed ...
 # discard the project
-elif [[ "$library_layout" =~ single_end$  && $quality_check = *FAILED* ]]; then
+if [[ "$library_layout" =~ single_end$  && $quality_check == *FAILED* ]]; then
     echo "PROGRESS -- Quality check: FAILED."
     echo "[ERROR] -- Project can't be included."
     exit 1
-fi
 
 # If library layout was paired end and quality_check contains 'FAILED' (i.e., fails any check)...
 # rerun the analysis as single end
-elif [[ $library_layout == "paired_end" && $quality_check = *FAILED* ]]; then
+elif [[ $library_layout == "paired_end" && $quality_check == *FAILED* ]]; then
 
     # We run DADA2 for the second time as if the library layout was single end
     library_layout="single_end"
@@ -125,7 +126,7 @@ elif [[ $library_layout == "paired_end" && $quality_check = *FAILED* ]]; then
 
 
     # Discard project if re analysis failed
-    if [[ $quality_check_rerun = *FAILED* ]]; then
+    if [[ $quality_check_rerun == *FAILED* ]]; then
 	echo "[ERROR] -- Quality check: FAILED."
 	echo "[ERROR] -- Project can't be included."
 	exit 1
@@ -135,6 +136,7 @@ elif [[ $library_layout == "paired_end" && $quality_check = *FAILED* ]]; then
         echo "[ERROR] -- Forcing the end of the analysis."
         exit 1
     fi
+fi
 
 # 3. If QC is successful, project can be included:
 # copy ASV count table to 'outputs' folder, then collapse into genus-level count table (keep both as outputs)
