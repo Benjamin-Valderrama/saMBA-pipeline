@@ -160,9 +160,8 @@ clean_count_table_tax <- count_table_tax
 # add ASVs DNA sequences as a column
 clean_count_table_tax$sequence <- rownames(clean_count_table_tax)
 
-# simplify rownames
-row.names(clean_count_table_tax) <- paste0("ASV", 1:nrow(clean_count_table_tax))
-
+# remove rownames
+rownames(clean_count_table_tax) <- NULL
 
 
 
@@ -173,7 +172,7 @@ print("WRITING DADA2 OUTPUTS ...")
 write.table(x = clean_count_table_tax,
 	    file = paste0(study_folder, "/01.dada2/ASV_count_table.tsv"),
 	    sep = "\t", quote = FALSE,
-	    row.names = TRUE, col.names = TRUE)
+	    row.names = FALSE, col.names = TRUE)
 
 # ASVs fasta file
 write.table(
