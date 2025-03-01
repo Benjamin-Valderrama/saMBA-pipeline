@@ -17,7 +17,10 @@ last_pid=$!
 wait $last_pid
 
 # Consolidate ASVs fasta file from ASV-level count table
-#echo "PROGRESS -- consolidating ASVs fasta file"
+echo "PROGRESS -- consolidating ASVs fasta file"
+Rscript ${CONSOLIDATION_SCRIPTS}/ASV_fasta.R $output/
+last_pid=$!
+wait $last_pid
 
 # INSDC metadatas are consolidated
 echo "PROGRESS -- consolidating INSDC file reports"
