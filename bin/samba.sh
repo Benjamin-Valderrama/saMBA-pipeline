@@ -111,41 +111,43 @@ fi
 
 
 
-# Step 2 -- Data download:
+# Step 2 -- Download raw data and INSDC metadata:
 if [ "$full" = true ] || [ "$download" = true ]; then
 
     # counter of analysed projects
     n=0
-
     # read the file line by line, skipping the header
     tail -n +2 "${input}" | while IFS=$'\t' read -r bioproject run_accession; do
 
         # if it is a new bioproject...
         if [ ! -d $output/$bioproject ]; then
-
             # keep track of analysed projects
             ((n++))
-
             # create a directory for the bioproject if it doesn't already exist
             mkdir -p "$output/$bioproject/00.rawdata"
             mkdir -p "$output/$bioproject/logs"
             mkdir -p "$output/$bioproject/outputs"
 
+	    # download bioproject metadata
+            echo "PROGRESS -- Downloading metadata of project $n: ${bioproject}" > ${output}/logs/${bioproject}.log
+            fastq-dl --accession $bioproject \
+		--outdir "$output/$bioproject" \
+		--only-download-metadata \
+		--silent \
+		--prefix "insdc-metadata" >> ${output}/${bioproject}/logs/metadata_download.log 2>&1
+
+	    # wait until metadata is downloaded before continuing
+	    last_pid=$!
+            wait $last_pid
+
+	echo "PROGRESS -- Downloading raw data of project $n: ${bioproject}" >> ${output}/logs/${bioproject}.log
         fi
 
         # download data
-        echo "PROGRESS -- Downloading raw data of project $n: ${bioproject}" > ${output}/logs/${bioproject}.log
-        echo "Downloading : $run_accession" >> $output/$bioproject/logs/download.log
-
+        echo "Downloading : $run_accession" >> $output/$bioproject/logs/data_download.log
         fastq-dl --accession $run_accession --outdir $output/$bioproject/00.rawdata --silent
 
-        # download one file at a time:
-
-        # Comment: I want the script to behave differently but I don't know how to do it:
-        # I want all the run accessions of the same project to be downloaded at once, and
-        # all files of the same project have to be downloaded before starting the download
-        # of samples in a new project.
-
+        # download one data file at a time
         last_pid=$!
         wait $last_pid
 
@@ -157,52 +159,20 @@ if [ "$full" = true ] || [ "$analyse" = true ]; then
 
     # counter of analysed projects
     n=0
-
     # analyse the downloaded data
     cut -f1 $input | tail -n +2 | uniq | while read -r bioproject; do
-
         ((n++))
+
         echo "PROGRESS -- Analysing project $n: ${bioproject}" >> ${output}/logs/${bioproject}.log
-
-        # Download ENA metada for the bioproject
-#        fastq-dl --accession $bioproject --outdir "$output/$bioproject/00.rawdata" --only-download-metadata --silent
-
-
-        # launch the analysis of the projects
-        # while overall progress of the analysis goes to ${output}/nohups/${bioproject}.out,
-        # step-specific logs can be found in ${output}/${bioproject}/nohups/
         bash ${SCRIPTS_FOLDER}/analyse_project.sh -s ${output}/${bioproject} --run_dada2 --refdb $refdb >> ${output}/logs/${bioproject}.log &
-
-        # save the PID of the process and add that to the log file to keep track of the analysis steps
         last_pid=$!
-        wait "$last_pid"
-
+        wait $last_pid
         echo "Project ${accession_number} (number $n) finished\n"
-
     done
 fi
 
 # Step 4 -- Project integration
 if [ "$full" = true ] || [ "$consolidate" = true ]; then
-
-    # counter of analysed projects
-    n=0
-
-    # Download INSDC metadata for each project data
-    cut -f1 $input | tail -n +2 | uniq | while read -r bioproject; do
-        ((n++))
-        echo "PROGRESS -- Downloading metadata of project $n: ${bioproject}" >> ${output}/logs/${bioproject}.log
-        # Download ENA metada for the bioproject
-        fastq-dl --accession $bioproject \
-		--outdir "$output/$bioproject" \
-		--only-download-metadata \
-		--silent \
-		--prefix "insdc-metadata" >> ${output}/logs/${bioproject}.log &
-
-	last_pid=$!
-        wait "$last_pid"
-    done
-
-    # one .log file is generated for each step of the following script
+    echo "PROGRESS -- Consolidating bioprojects"
     bash ${SCRIPTS_FOLDER}/consolidate_projects.sh $output
 fi
