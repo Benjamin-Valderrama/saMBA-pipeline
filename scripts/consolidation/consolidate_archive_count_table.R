@@ -27,12 +27,16 @@ paths_to_genus_ct <- paste(projects_folder, paths_to_genus_ct, sep = "/")
 ###################
 #### FUNCTIONS ####
 ###################
+log <- function(path){
+    cat(paste("Analysing:", path, "\n"))
+}
 
 consolidate_table <- function(vector_with_paths, level){
 
     # level is either:
     # 'full_taxonomy', for genus-level
     # 'sequence', for ASV-level
+    log(vector_with_paths)
 
     # Read the count tables
     count_tables_list <- vector_with_paths %>%

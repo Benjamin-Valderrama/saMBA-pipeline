@@ -19,6 +19,10 @@ output_folders <- all_sub_folders[grepl(x = all_sub_folders, pattern = "/outputs
 ## FUNCTIONS ##
 ###############
 
+log <- function(path){
+    cat(paste("Analysing:", path, "\n"))
+}
+
 is_empty_folder <- function(path){
     # Check if a folder is empty or not
     file_names <- list.files(path, include.dirs = FALSE)
@@ -67,6 +71,7 @@ read_and_harmonise <- function(path){
     #	        (denoisedR and merged).
     # SOLUTION: add that column of NAs to projects sequenced
     #           as SE.
+    log(path)
     data <- read.delim(path)
 
     # if project is SE
