@@ -61,7 +61,7 @@ for project in $bioprojects; do
 #    echo "$project"
 
     n_samples_expected=$(grep "$project" "$ACCESSION_FILE" | wc -l)
-    metadata_file="${DIRECTORY}/${project}/00.rawdata/fastq-run-info.tsv"
+    metadata_file="${DIRECTORY}/${project}/insdc-metadata-run-info.tsv"
 
     if [[ -f "$metadata_file" ]]; then
         n_samples_w_metadata=$(tail -n +2 "$metadata_file" | wc -l)
