@@ -176,9 +176,9 @@ write.table(x = clean_count_table_tax,
 
 # ASVs fasta file
 write.table(
-	x = paste(">ASV", 1:nrow(clean_count_table_tax), clean_count_table_tax$full_taxonomy, "\n",
-		  clean_count_table_tax$sequence
-		  ),
+	x = paste0(">ASV",1:nrow(clean_count_table_tax)," ", clean_count_table_tax$full_taxonomy, "\n",
+		   clean_count_table_tax$sequence
+		   ),
 	file = paste0(study_folder, "/01.dada2/ASVs.fa"),
 	quote = FALSE, row.names = FALSE, col.names = FALSE
 	)
